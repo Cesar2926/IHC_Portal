@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-route
 import { Border } from '@/components/ui'; // Por los momentos solo importo el Border
 import { Aquarium, Library, Culture, Forum, ArticleDetail } from '@/pages'
 import { motion } from 'framer-motion';
+import '/src/css/App.css'
 
 // const topToBottomVariants = {
 //   initial: { clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)' },
@@ -42,12 +43,15 @@ function Home() {
           style={{ userSelect: 'none' }}
         />
         <div
-          className="w-[900px] h-[250px] text-white p-5 flex items-center justify-center text-center font-mono text-[35px]"
+          className="w-300 h-60 text-center justify-start text-white text-3xl font-normal font-['Slackey']"
           style={{ userSelect: 'none' }}
         >
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            Kuai-Mare está aquí para guiarte en tu viaje por este océano de información. Con su sabiduría infinita y su comprensión profunda, te ayudará a navegar en las aguas turbulentas de la búsqueda del conocimiento, brindándote claridad y apoyo en cada paso del camino.
           </p>
+        </div>
+        <div className="w-100 justify-start text-white text-5xl font-normal font-['Slackey'] leading-none">
+          KUAI-MARE
         </div>
       </div>
 
