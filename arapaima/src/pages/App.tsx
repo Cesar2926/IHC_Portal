@@ -184,11 +184,11 @@ function Home() {
         </div>
 
         {/* Imágenes debajo de las esquinas */}
-        <div className="absolute top-0 left-0 z-0 mix-blend-screen">
+        <div className="absolute top-0 left-0 z-0">
           <img
-            src="/src/assets/background/sun.gif"
+            src="/src/assets/background/sun.svg"
             alt="Top Left Image"
-            className="w-120 h-120 opacity-50"
+            className="w-200 h-200"
           />
         </div>
         <div className="absolute top-0 right-0 z-0">
@@ -200,23 +200,23 @@ function Home() {
         </div>
         <div className="absolute top-0 right-0 z-0 mix-blend-saturation">
           <img
-            src="/src/assets/background/leaf.gif"
+            src="/src/assets/background/leaf.svg"
             alt="Top Right Background Image"
-            className="w-150 h-150 rotate-135 translate-x-[-5rem]"
+            className="w-200 h-200"
           />
         </div>
-        <div className="absolute bottom-0 left-0 z-0 mix-blend-lighten">
+        <div className="absolute bottom-0 left-0 z-0">
           <img
-            src="/src/assets/background/fire.gif"
+            src="/src/assets/background/fire.svg"
             alt="Bottom Left Image"
-            className="w-100 h-100"
+            className="w-300 h-300"
           />
         </div>
-        <div className="absolute bottom-0 right-0 z-0 mix-blend-color">
+        <div className="absolute bottom-0 right-0 z-0">
             <img
-              src="/src/assets/background/water.gif"
+              src="/src/assets/background/water.svg"
               alt="Bottom Right Image"
-              className="w-225 h-125 rotate-[-35deg] translate-y-20 translate-x-50"
+              className="w-225 h-125"
             />
         </div>
 
