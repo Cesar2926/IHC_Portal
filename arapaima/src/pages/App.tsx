@@ -140,7 +140,7 @@ function Home() {
           <img
             src="/src/assets/background/leaves.gif"
             alt="Animated Leaves"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover opacity-50"
           />
         </div>
 
