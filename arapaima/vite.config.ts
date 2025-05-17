@@ -11,4 +11,5 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  base: 'https://iadev2005.github.io/IHC_Portal'
 })
