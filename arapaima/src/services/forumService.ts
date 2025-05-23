@@ -1,4 +1,5 @@
 import forumData from '@/data/forumData.json';
+import { EventEmitter } from 'events';
 
 // Definición de tipos
 export interface Comment {
@@ -148,4 +149,57 @@ export function subscribeToForumChanges(callback: (data: ForumData) => void) {
 // Notificar a los suscriptores
 function notifySubscribers() {
     subscribers.forEach(callback => callback(currentData));
-} 
+}
+
+export type Post = {
+    id: string;
+    title: string;
+    content: string;
+    author: string;
+    createdAt: string;
+    upvotes: number;
+    downvotes: number;
+    comments: Comment[];
+};
+
+export type Comment = {
+    id: string;
+    content: string;
+    author: string;
+    createdAt: string;
+    upvotes: number;
+    downvotes: number;
+    replies?: Comment[];
+};
+
+let posts: Post[] = [];
+
+export const getPosts = () => posts;
+
+export const getPost = (id: string) => posts.find(post => post.id === id);
+
+export const addPost = (post: Post) => {
+    posts = [post, ...posts];
+};
+
+export const updatePost = (updatedPost: Post) => {
+    posts = posts.map(post => post.id === updatedPost.id ? updatedPost : post);
+};
+
+export const addComment = (postId: string, comment: Comment) => {
+    const post = posts.find(p => p.id === postId);
+    if (post) {
+        post.comments = [comment, ...post.comments];
+        updatePost(post);
+    }
+};
+
+export const updateComment = (postId: string, updatedComment: Comment) => {
+    const post = posts.find(p => p.id === postId);
+    if (post) {
+        post.comments = post.comments.map(comment => 
+            comment.id === updatedComment.id ? updatedComment : comment
+        );
+        updatePost(post);
+    }
+}; 

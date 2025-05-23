@@ -479,135 +479,174 @@ export function PostDetail() {
                         </div>
                     </div>
 
-                    {/* Contenido principal con scroll */}
-                    <div className="relative flex-1 overflow-y-auto px-4 md:px-8 py-6 pt-32 md:pt-36 custom-scrollbar-blue">
+                    {/* Contenido principal */}
+                    <div className="relative flex-1 overflow-y-auto px-4 md:px-8 pt-24 md:pt-36 pb-8">
                         <div className="max-w-4xl mx-auto">
-                            {post ? (
-                                <div className="bg-black/20 backdrop-blur-sm p-4 md:p-8 rounded-xl">
-                                    <div className="flex flex-col gap-4 md:gap-8">
-                                        {/* Título del post */}
-                                        <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold leading-tight">{post.title}</h1>
-
-                                        {/* Metadatos del post */}
-                                        <div className="flex flex-col md:flex-row gap-2 md:gap-4 md:items-center text-white/70 text-sm md:text-base">
-                                            <span>Por {post.author}</span>
-                                            <span className="hidden md:block">•</span>
-                                            <span>{formatDate(post.createdAt)}</span>
+                            {/* Post */}
+                            <motion.div
+                                className="bg-black/60 backdrop-blur-sm rounded-3xl border border-[#b38f25]/30 p-4 md:p-8 mb-6"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5 }}
+                            >
+                                <div className="flex items-start gap-4">
+                                    <img
+                                        src={post?.authorAvatar || "/src/assets/avatars/default.png"}
+                                        alt="Avatar"
+                                        className="w-12 h-12 rounded-full object-cover"
+                                    />
+                                    <div className="flex-1">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <h3 className="text-white font-bold">{post?.author}</h3>
+                                            <span className="text-white/60 text-sm">
+                                                {formatDate(post?.createdAt || '')}
+                                            </span>
                                         </div>
-
-                                        {/* Contenido del post */}
-                                        <p className="text-base md:text-lg lg:text-xl leading-relaxed whitespace-pre-wrap">{post.content}</p>
-
-                                        {/* Votos del post principal */}
-                                        <div className="flex justify-end">
-                                            <VoteButtons
-                                                commentId={post.id}
-                                                upvotes={post.upvotes}
-                                                downvotes={post.downvotes}
-                                                isMainPost={true}
+                                        <h2 className="text-xl md:text-2xl font-bold text-white mb-4">
+                                            {post?.title}
+                                        </h2>
+                                        <p className="text-white/90 text-base md:text-lg mb-4 whitespace-pre-wrap">
+                                            {post?.content}
+                                        </p>
+                                        {post?.image && (
+                                            <img
+                                                src={post.image}
+                                                alt="Post image"
+                                                className="w-full rounded-xl mb-4"
                                             />
-                                        </div>
-
-                                        {/* Sección de comentarios */}
-                                        <div className="mt-6 md:mt-8">
-                                            <h3 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">Comentarios</h3>
-                                            
-                                            {/* Área de nuevo comentario */}
-                                            <div className="mb-6 md:mb-8">
-                                                <textarea
-                                                    value={newComment}
-                                                    onChange={(e) => setNewComment(e.target.value)}
-                                                    className="w-full h-24 md:h-32 min-h-[6rem] md:min-h-[8rem] p-3 bg-black/30 rounded text-white mb-3 md:mb-4 resize-none"
-                                                    placeholder="¿Qué piensas sobre esto?"
+                                        )}
+                                        <div className="flex items-center gap-4">
+                                            <button
+                                                className="flex items-center gap-2 text-white/60 hover:text-white transition-colors"
+                                                onClick={() => handleVote(post.id, true, true)}
+                                            >
+                                                <img
+                                                    src={userVotes[post.id] === 'up' ? "/src/assets/icons/heart-filled.svg" : "/src/assets/icons/heart.svg"}
+                                                    alt="Like"
+                                                    className="w-6 h-6"
                                                 />
-                                                <div className="flex justify-end">
-                                                    <button
-                                                        onClick={handleAddComment}
-                                                        className="px-4 md:px-6 py-2 md:py-3 bg-blue-600 text-white rounded text-sm md:text-base hover:bg-blue-700 disabled:opacity-50 transition-colors"
-                                                        disabled={!newComment.trim()}
-                                                    >
-                                                        Comentar
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            {/* Lista de comentarios */}
-                                            <div className="space-y-4 md:space-y-6">
-                                                {post.comments.map((comment) => (
-                                                    <div key={comment.id} className="bg-black/10 rounded-lg p-3 md:p-6">
-                                                        <div className="flex flex-col gap-2 md:gap-3">
-                                                            <div className="flex flex-col md:flex-row gap-1 md:gap-2 md:items-center text-white/70 text-sm md:text-base">
-                                                                <span className="font-medium">{comment.author}</span>
-                                                                <span className="hidden md:block">•</span>
-                                                                <span className="text-sm">{formatDate(comment.createdAt)}</span>
-                                                            </div>
-                                                            <p className="text-sm md:text-base">{comment.content}</p>
-                                                            
-                                                            <div className="flex items-center justify-end mt-2">
-                                                                <button
-                                                                    onClick={() => setReplyingTo(comment.id)}
-                                                                    className="text-sm md:text-base text-blue-400 hover:text-blue-300 transition-colors"
-                                                                >
-                                                                    Responder
-                                                                </button>
-                                                            </div>
-                                                        </div>
-
-                                                        {/* Área de respuesta */}
-                                                        {replyingTo === comment.id && (
-                                                            <div className="mt-3 md:mt-4">
-                                                                <textarea
-                                                                    value={replyContents[comment.id] || ''}
-                                                                    onChange={(e) => handleReplyChange(comment.id, e.target.value)}
-                                                                    className="w-full h-20 md:h-24 min-h-[5rem] md:min-h-[6rem] p-2 md:p-3 bg-black/30 rounded text-sm md:text-base text-white resize-none"
-                                                                    placeholder="Escribe tu respuesta..."
-                                                                />
-                                                                <div className="flex justify-end gap-2 mt-2 md:mt-3">
-                                                                    <button
-                                                                        onClick={() => handleCancelReply(comment.id)}
-                                                                        className="px-3 py-1 text-xs md:text-sm text-gray-400 hover:text-white transition-colors"
-                                                                    >
-                                                                        Cancelar
-                                                                    </button>
-                                                                    <button
-                                                                        onClick={() => handleAddReply(comment.id, replyContents[comment.id] || '')}
-                                                                        className="px-3 md:px-4 py-1 md:py-2 text-xs md:text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 transition-colors"
-                                                                        disabled={!replyContents[comment.id]?.trim()}
-                                                                    >
-                                                                        Responder
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        )}
-
-                                                        {/* Respuestas */}
-                                                        {comment.replies && comment.replies.length > 0 && (
-                                                            <div className="mt-3 md:mt-4 ml-3 md:ml-6 space-y-3 md:space-y-4 border-l-2 border-gray-700 pl-3 md:pl-4">
-                                                                {comment.replies.map((reply) => (
-                                                                    <div key={reply.id} className="bg-black/10 rounded-lg p-3 md:p-4">
-                                                                        <div className="flex flex-col gap-2">
-                                                                            <div className="flex flex-col md:flex-row gap-1 md:gap-2 md:items-center text-white/70 text-sm">
-                                                                                <span className="font-medium">{reply.author}</span>
-                                                                                <span className="hidden md:block">•</span>
-                                                                                <span>{formatDate(reply.createdAt)}</span>
-                                                                            </div>
-                                                                            <p className="text-sm md:text-base">{reply.content}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                ))}
-                                            </div>
+                                                <span>{post.upvotes - post.downvotes}</span>
+                                            </button>
+                                            <button
+                                                className="flex items-center gap-2 text-white/60 hover:text-white transition-colors"
+                                                onClick={() => setReplyingTo(null)}
+                                            >
+                                                <img
+                                                    src="/src/assets/icons/comment.svg"
+                                                    alt="Comment"
+                                                    className="w-6 h-6"
+                                                />
+                                                <span>{post.comments?.length || 0}</span>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
-                            ) : (
-                                <div className="text-center text-white text-base md:text-xl">
-                                    Post no encontrado
-                                </div>
-                            )}
+                            </motion.div>
+
+                            {/* Comentarios */}
+                            <AnimatePresence>
+                                {replyingTo === null && (
+                                    <motion.div
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        className="flex items-start gap-3 mt-6"
+                                    >
+                                        <img
+                                            src="/src/assets/avatars/default.png"
+                                            alt="Tu avatar"
+                                            className="w-10 h-10 rounded-full object-cover"
+                                        />
+                                        <div className="flex-1">
+                                            <textarea
+                                                value={newComment}
+                                                onChange={(e) => setNewComment(e.target.value)}
+                                                placeholder="Escribe un comentario..."
+                                                className="w-full bg-white/10 rounded-xl border border-white/20 p-3 text-white placeholder-white/40 focus:outline-none focus:border-white/40 transition-colors resize-none"
+                                                rows={3}
+                                            />
+                                            <div className="flex justify-end mt-2">
+                                                <button
+                                                    onClick={handleAddComment}
+                                                    disabled={!newComment.trim()}
+                                                    className="px-4 py-2 bg-[#b38f25] text-white rounded-lg hover:bg-[#8f6d0d] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                >
+                                                    Comentar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+
+                            {/* Lista de comentarios */}
+                            <div className="space-y-4 md:space-y-6">
+                                {post.comments.map((comment) => (
+                                    <div key={comment.id} className="bg-black/10 rounded-lg p-3 md:p-6">
+                                        <div className="flex flex-col gap-2 md:gap-3">
+                                            <div className="flex flex-col md:flex-row gap-1 md:gap-2 md:items-center text-white/70 text-sm md:text-base">
+                                                <span className="font-medium">{comment.author}</span>
+                                                <span className="hidden md:block">•</span>
+                                                <span className="text-sm">{formatDate(comment.createdAt)}</span>
+                                            </div>
+                                            <p className="text-sm md:text-base">{comment.content}</p>
+                                            
+                                            <div className="flex items-center justify-end mt-2">
+                                                <button
+                                                    onClick={() => setReplyingTo(comment.id)}
+                                                    className="text-sm md:text-base text-blue-400 hover:text-blue-300 transition-colors"
+                                                >
+                                                    Responder
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {/* Área de respuesta */}
+                                        {replyingTo === comment.id && (
+                                            <div className="mt-3 md:mt-4">
+                                                <textarea
+                                                    value={replyContents[comment.id] || ''}
+                                                    onChange={(e) => handleReplyChange(comment.id, e.target.value)}
+                                                    className="w-full h-20 md:h-24 min-h-[5rem] md:min-h-[6rem] p-2 md:p-3 bg-black/30 rounded text-sm md:text-base text-white resize-none"
+                                                    placeholder="Escribe tu respuesta..."
+                                                />
+                                                <div className="flex justify-end gap-2 mt-2 md:mt-3">
+                                                    <button
+                                                        onClick={() => handleCancelReply(comment.id)}
+                                                        className="px-3 py-1 text-xs md:text-sm text-gray-400 hover:text-white transition-colors"
+                                                    >
+                                                        Cancelar
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleAddReply(comment.id, replyContents[comment.id] || '')}
+                                                        className="px-3 md:px-4 py-1 md:py-2 text-xs md:text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                                                        disabled={!replyContents[comment.id]?.trim()}
+                                                    >
+                                                        Responder
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Respuestas */}
+                                        {comment.replies && comment.replies.length > 0 && (
+                                            <div className="mt-3 md:mt-4 ml-3 md:ml-6 space-y-3 md:space-y-4 border-l-2 border-gray-700 pl-3 md:pl-4">
+                                                {comment.replies.map((reply) => (
+                                                    <div key={reply.id} className="bg-black/10 rounded-lg p-3 md:p-4">
+                                                        <div className="flex flex-col gap-2">
+                                                            <div className="flex flex-col md:flex-row gap-1 md:gap-2 md:items-center text-white/70 text-sm">
+                                                                <span className="font-medium">{reply.author}</span>
+                                                                <span className="hidden md:block">•</span>
+                                                                <span>{formatDate(reply.createdAt)}</span>
+                                                            </div>
+                                                            <p className="text-sm md:text-base">{reply.content}</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </motion.div>

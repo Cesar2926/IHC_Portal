@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { getLibraryData, subscribeToLibraryChanges, type LibraryData } from '@/services/libraryService';
 import { MobileMenu } from './components/MobileMenu';
+import books from '@/data/books.json';
 
 // Componente de pincelada SVG para la máscara
 const BrushStrokeMask = () => (
