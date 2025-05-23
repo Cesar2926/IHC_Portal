@@ -144,6 +144,18 @@ export function PostDetail() {
         );
     });
 
+    const handleReplyChange = React.useCallback((commentId: number, value: string) => {
+        setReplyContents(prev => ({
+            ...prev,
+            [commentId]: value
+        }));
+    }, []);
+
+    const handleCancelReply = React.useCallback((commentId: number) => {
+        setReplyingTo(null);
+        setReplyContents(prev => ({ ...prev, [commentId]: '' }));
+    }, []);
+
     const handleAddComment = () => {
         if (!newComment.trim() || !post) return;
 
@@ -206,8 +218,8 @@ export function PostDetail() {
         setReplyContents(prev => ({ ...prev, [commentId]: '' }));
     };
 
-    const handleVote = (commentId: number | null, isUpvote: boolean, isMainPost: boolean = false) => {
-        if (!post || !isMainPost) return; // Solo permitir votos en el post principal
+    const handleVote = (_commentId: number | null, isUpvote: boolean, isMainPost: boolean = false) => {
+        if (!post || !isMainPost) return;
 
         const voteType = isUpvote ? 'up' : 'down';
         const targetId = post.id;
@@ -217,125 +229,10 @@ export function PostDetail() {
         }
     };
 
-    const handleReplyChange = React.useCallback((commentId: number, value: string) => {
-        setReplyContents(prev => ({
-            ...prev,
-            [commentId]: value
-        }));
-    }, []);
 
-    const handleCancelReply = React.useCallback((commentId: number) => {
-        setReplyingTo(null);
-        setReplyContents(prev => ({ ...prev, [commentId]: '' }));
-    }, []);
 
-    const handleToggleReply = React.useCallback((commentId: number) => {
-        setReplyingTo(prev => prev === commentId ? null : commentId);
-    }, []);
-
-    const ReplyBox = React.memo(({ commentId }: { commentId: number }) => (
-        <div className="mt-2 mb-4">
-            <textarea
-                value={replyContents[commentId] || ''}
-                onChange={(e) => handleReplyChange(commentId, e.target.value)}
-                className="w-full h-24 min-h-[6rem] max-h-24 p-2 bg-black/30 rounded text-sm text-white resize-none"
-                placeholder="Escribe tu respuesta..."
-            />
-            <div className="flex justify-end gap-2 mt-2">
-                <button
-                    onClick={() => handleCancelReply(commentId)}
-                    className="px-3 py-1 text-sm text-gray-400 hover:text-white"
-                >
-                    Cancelar
-                </button>
-                <button
-                    onClick={() => handleAddReply(commentId, replyContents[commentId] || '')}
-                    className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
-                    disabled={!replyContents[commentId]?.trim()}
-                >
-                    Responder
-                </button>
-            </div>
-        </div>
-    ));
-
-    const VoteButtons = ({ commentId, upvotes, downvotes, isMainPost = false }: { commentId: number | null, upvotes: number, downvotes: number, isMainPost?: boolean }) => {
-        const currentVote = userVotes[post?.id || -1];
-        
-        if (!isMainPost) {
-            return null;
-        }
-
-        return (
-            <div className="flex flex-row md:flex-col items-center gap-1 mr-2 md:mr-4">
-                <button 
-                    onClick={() => handleVote(commentId, true, isMainPost)}
-                    className={`p-2 md:p-1 text-lg md:text-base text-gray-400 hover:text-orange-500 transition-colors ${
-                        currentVote === 'up' ? '!text-orange-500' : ''
-                    }`}
-                    aria-label="Me gusta"
-                >
-                    ▲
-                </button>
-                <span className="text-sm md:text-base font-bold min-w-[2ch] text-center">{upvotes - downvotes}</span>
-                <button 
-                    onClick={() => handleVote(commentId, false, isMainPost)}
-                    className={`p-2 md:p-1 text-lg md:text-base text-gray-400 hover:text-blue-500 transition-colors ${
-                        currentVote === 'down' ? '!text-blue-500' : ''
-                    }`}
-                    aria-label="No me gusta"
-                >
-                    ▼
-                </button>
-            </div>
-        );
-    };
 
     // Componente reutilizable para inputs de comentarios
-    const CommentInput = React.memo(({ 
-        value, 
-        onChange, 
-        onSubmit, 
-        onCancel,
-        placeholder = "Escribe tu respuesta...",
-        submitText = "Responder",
-        minHeight = "6rem"
-    }: {
-        value: string;
-        onChange: (value: string) => void;
-        onSubmit: () => void;
-        onCancel?: () => void;
-        placeholder?: string;
-        submitText?: string;
-        minHeight?: string;
-    }) => (
-        <div className="mt-2 mb-4">
-            <textarea
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                className={`w-full p-3 bg-black/30 rounded text-white resize-none`}
-                style={{ minHeight }}
-                placeholder={placeholder}
-            />
-            <div className="flex justify-end gap-2 mt-2">
-                {onCancel && (
-                    <button
-                        onClick={onCancel}
-                        className="px-3 py-1 text-sm text-gray-400 hover:text-white"
-                    >
-                        Cancelar
-                    </button>
-                )}
-                <button
-                    onClick={onSubmit}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-                    disabled={!value.trim()}
-                >
-                    {submitText}
-                </button>
-            </div>
-        </div>
-    ));
 
     const CommentComponent = React.memo(({ comment, isReply = false }: { comment: Comment, isReply?: boolean }) => {
         const isReplying = replyingTo === comment.id;
@@ -375,9 +272,6 @@ export function PostDetail() {
         );
     });
 
-    const handleNavigateBack = () => {
-        navigate('/forum', { state: { from: 'post' } });
-    };
 
     if (!post) {
         return (

@@ -3,27 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { getLibraryData, subscribeToLibraryChanges, type LibraryData } from '@/services/libraryService';
 import { MobileMenu } from './components/MobileMenu';
-import books from '@/data/books.json';
 
-// Componente de pincelada SVG para la máscara
-const BrushStrokeMask = () => (
-    <motion.path
-        d="M30,50 Q45,30 50,50 T70,50"
-        stroke="white"
-        strokeWidth="80"
-        fill="none"
-        strokeLinecap="round"
-        initial={{ pathLength: 0 }}
-        animate={{ 
-            pathLength: 1,
-            transition: {
-                duration: 1,
-                ease: "easeInOut",
-                delay: 0.2
-            }
-        }}
-    />
-);
 
 const pageTransition = {
     initial: {
